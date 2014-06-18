@@ -1,0 +1,65 @@
+<script type="text/javascript">
+<!--
+  function display_new_category() {
+    cat = document.getElementById("expense_category").value;
+	console.log(cat);
+	if (cat == "New") {
+	  show("new_category_div");
+	}
+	else {
+	  hide("new_category_div");
+	}
+  }
+
+  function hide(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function show(id) {
+    document.getElementById(id).style.display = 'block';
+  }
+
+//-->
+</script>
+
+
+<h1>New Expense</h1>
+
+<%= link_to 'All expenses', expenses_path %>
+
+<%= form_for :expense, url: expenses_path do |f| %>
+  <p>
+    <%= f.label :amount %><br>
+    <%= f.number_field :amount, in: 0.0..999999999.99, step: 0.01 %>
+  </p>
+
+  <p>
+    <%= f.label :date %><br>
+    <%= f.date_field :date, value: Date.today %>
+  </p>
+
+  <p>
+    <%= f.label :category, :id=>"category" %><br>
+	<%= f.select :category, 
+	  options_for_select(["New"] + Expense.select(:category).map(&:category).uniq),
+	  {}, :onchange => "display_new_category();" %>
+  </p>
+
+  <div id="new_category_div" style="display:block">
+  <p>
+    <%= label_tag :new_category %><br>
+    <%= text_field_tag :new_category %>
+  </p>
+  </div>
+
+  <p>
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </p>
+ 
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
+
+
+
