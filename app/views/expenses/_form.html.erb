@@ -1,0 +1,65 @@
+<script type="text/javascript">
+  function display_new_category() {
+    category = document.getElementById("expense_category").value;
+    console.log(category);
+    (category == "New") ? show("new_category_div") : hide("new_category_div");
+  }
+
+  function hide(id) {
+    document.getElementById(id).style.display = 'none';
+  }
+  function show(id) {
+    document.getElementById(id).style.display = 'block';
+  }
+
+</script>
+
+<%= form_for @expense do |f| %>
+  <% if @expense.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@expense.errors.count, "error") %>
+      prohibited this expense from being saved:
+    </h2>
+    <ul>
+    <% @expense.errors.full_messages.each do |msg| %>
+      <li><%= msg %></li>
+    <% end %>
+    </ul>
+  </div>
+  <% end %>
+
+  <p>
+    <%= f.label :amount %><br>
+    <%= f.number_field :amount, in: 0.0..999999999.99, step: 0.01 %>
+  </p>
+
+  <p>
+    <%= f.label :date %><br>
+    <%= f.date_field :date, value: Date.today %>
+  </p>
+
+  <p>
+    <%= f.label :category %><br>
+    <% options = (["", ["Create new category", "New"]] + 
+      Expense.select(:category).map(&:category)).uniq %>
+    <%= f.select :category, options, {}, 
+      :onchange => "display_new_category();" %>
+  </p>
+
+  <div id="new_category_div" style="display:none">
+  <p>
+    <%= label_tag :new_category %><br>
+    <%= text_field_tag :new_category %>
+  </p>
+  </div>
+
+  <p>
+    <%= f.label :description %><br>
+    <%= f.text_area :description %>
+  </p>
+
+  <p>
+    <%= f.submit %>
+  </p>
+<% end %>
+
