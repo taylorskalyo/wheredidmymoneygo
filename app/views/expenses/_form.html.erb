@@ -34,8 +34,9 @@
   </p>
 
   <p>
+    <% @expense.date ||= Time.now.to_s(:db) %>
     <%= f.label :date %><br>
-    <%= f.date_field :date, value: Date.today %>
+    <%= f.date_field :date  %>
   </p>
 
   <p>
