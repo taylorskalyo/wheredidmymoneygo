@@ -34,7 +34,7 @@ class ExpensesController < ApplicationController
   end
 
   def index
-    @expenses = Expense.order(:date).all
+    @expenses = Expense.order(date: :desc)
   end
 
   def destroy
