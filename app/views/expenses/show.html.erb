@@ -1,23 +1,25 @@
-<%= link_to 'All', expenses_path %>
+<%= link_to 'View All', expenses_path %>
 | <%= link_to 'Edit', edit_expense_path(@expense) %>
 | <%= link_to 'Delete', expense_path(@expense), 
   method: :delete, data: { confirm: 'Are you sure?' } %>
-<p>
-  <strong>Amount</strong>
-  <%= "$#{@expense.amount}" %>
-</p>
+<div class="table-responsive">
+<table class="table table-striped">
+  <tr>
+    <th>Amount</th>
+    <td> <%= number_to_currency(@expense.amount) %>
+  </tr>
+  <tr>
+    <th>Date</th>
+    <td> <%= @expense.date %>
+  </tr>
+  <tr>
+    <th>Category</th>
+    <td> <%= @expense.category %>
+  </tr>
+  <tr>
+    <th>Description</th>
+    <td> <%= @expense.description %>
+  </tr>
+</table>
+</div>
 
-<p>
-  <strong>Date</strong>
-  <%= @expense.date.to_date %>
-</p>
-
-<p>
-  <strong>Category</strong>
-  <%= @expense.category %>
-</p>
-
-<p>
-  <strong>Description</strong>
-  <%= @expense.description %>
-</p>

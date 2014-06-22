@@ -23,7 +23,8 @@ var outerArc = d3.svg.arc()
 
 var data = <%= raw Expense.group(:category).sum(:amount).map{|e| {
   :amount => e[1], 
-  :category => e[0]
+  :category => e[0],
+  :amount_str => number_to_currency(e[1])
 }}.to_json %>;
 
 var preview = false;
@@ -33,9 +34,10 @@ var preview = false;
 if (data.length == 0) {
   preview = true;
   data = [
-    {amount:165.34, category:"Groceries"},
-    {amount:49.12, category:"Gas"},
-    {amount:10.07, category:"Other"}
+    {amount:165.34, category:"Groceries", amount_str:"$165.34"},
+    {amount:110.07, category:"Bills",     amount_str:"$110.07"},
+    {amount:49.12,  category:"Gas",       amount_str:"$49.12" },
+    {amount:20.81,  category:"Other",     amount_str:"$20.81" }
   ]
 }
 
@@ -49,7 +51,9 @@ var path = svg.datum(data).selectAll("path")
     .data(pie)
   .enter().append("path")
     .attr("fill", function(d, i) { return color(i); })
-    .attr("d", arc);
+    .attr("d", arc)
+    .append("svg:title")
+      .text(function(d) { return d.data.amount_str; });
 
 function midAngle(d){
   return d.startAngle + (d.endAngle - d.startAngle)/2;
@@ -117,7 +121,9 @@ if (preview) {
 
   svg.append("text")
     .text("Preview")
-    .style("text-anchor", "middle");
+    .attr("dy", ".4em")
+    .style("text-anchor", "middle")
+    .style("font-size", "1.9em");
 }
 
 </script>

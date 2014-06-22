@@ -16,7 +16,7 @@
 
 <% @expenses.each do |expense| %>
   <tr>
-    <td><%= expense.amount %></td>
+    <td><%= number_to_currency(expense.amount) %></td>
     <td><%= expense.date.to_date %></td>
     <td><%= expense.category %></td>
     <td class="hidden-xs"><%= expense.description %></td>

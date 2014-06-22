@@ -7,7 +7,7 @@ class ExpensesController < ApplicationController
     @expense = Expense.new(expense_params)
     use_new_category
     if @expense.save
-      redirect_to @expense
+      redirect_to expenses_path
     else
       render :new
     end
@@ -15,6 +15,7 @@ class ExpensesController < ApplicationController
 
   def edit
     @expense = Expense.find(params[:id])
+    session[:return_to] ||= request.referer
   end
 
   def update
@@ -22,7 +23,7 @@ class ExpensesController < ApplicationController
     @expense.attributes = expense_params
     use_new_category
     if @expense.save
-      redirect_to @expense
+      redirect_to session.delete(:return_to)
     else
       render :edit
     end
@@ -33,7 +34,7 @@ class ExpensesController < ApplicationController
   end
 
   def index
-    @expenses = Expense.all
+    @expenses = Expense.order(:date).all
   end
 
   def destroy
