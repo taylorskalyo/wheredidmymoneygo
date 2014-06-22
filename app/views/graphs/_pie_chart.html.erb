@@ -25,7 +25,7 @@ var data = <%= raw Expense.group(:category).sum(:amount).map{|e| {
   :amount => e[1], 
   :category => e[0],
   :amount_str => number_to_currency(e[1])
-}}.to_json %>;
+}}.sort_by { |expense| expense[:amount] }.reverse.to_json %>;
 
 var preview = false;
 
