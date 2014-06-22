@@ -7,7 +7,7 @@
     <th>Amount</th>
     <th>Date</th>
     <th>Category</th>
-    <th>Description</th>
+    <th class="hidden-xs">Description</th>
     <th colspan="3"></th>
   </tr>
 
@@ -16,7 +16,7 @@
     <td><%= expense.amount %></td>
     <td><%= expense.date.to_date %></td>
     <td><%= expense.category %></td>
-    <td><%= expense.description %></td>
+    <td class="hidden-xs"><%= expense.description %></td>
     <td><%= link_to 'View', expense_path(expense) %></td>
     <td><%= link_to 'Edit', edit_expense_path(expense) %></td>
     <td><%= link_to 'Delete', expense_path(expense),
