@@ -9,9 +9,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-
 <%= render :partial => 'layouts/navbar' %>
-<%= yield %>
+<div class="container-fluid">
+  <div class="row">
+    <%= render :partial => 'layouts/sidebar' %>
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <%= yield %>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

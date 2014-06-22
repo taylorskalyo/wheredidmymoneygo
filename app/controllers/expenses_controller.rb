@@ -37,6 +37,14 @@ class ExpensesController < ApplicationController
     @expenses = Expense.order(date: :desc)
   end
 
+  def overview
+    @expenses = Expense.order(date: :desc).limit(14)
+  end
+
+  def charts
+    @expenses = Expense.order(date: :desc)
+  end
+
   def destroy
     @expense = Expense.find(params[:id])
     @expense.destroy

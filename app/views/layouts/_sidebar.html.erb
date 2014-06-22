@@ -1,0 +1,11 @@
+<%= stylesheet_link_tag 'sidebar', media: 'all', 'data-turbolinks-track' => true %>
+<div class="col-sm-3 col-md-2 sidebar">
+  <ul class="nav nav-sidebar">
+    <%= content_tag(:li, link_to("Overview", overview_expenses_path), 
+      class: current_page?(overview_expenses_path)? "active" : nil)%>
+    <%= content_tag(:li, link_to("Charts", charts_expenses_path), 
+      class: current_page?(charts_expenses_path)? "active" : nil)%>
+    <%= content_tag(:li, link_to("List All", expenses_path), 
+      class: current_page?(expenses_path)? "active" : nil)%>
+  </ul>
+</div>
