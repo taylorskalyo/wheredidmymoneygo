@@ -1,11 +1,20 @@
 <%= stylesheet_link_tag    'graphs', media: 'all', 'data-turbolinks-track' => true %>
 
-<svg class="pie_chart"></svg>
+<svg class="pie_chart"width="400" height="250" viewBox="0 0 400 250"
+  preserveAspectRatio="xMidYMid"></svg>
 
 <script>
 var width = 400, 
     height = 250, 
     radius = Math.min(width, height) / 2 - 10;
+
+var aspect = 400 / 250,
+    chart = $(".pie_chart");
+$(window).on("resize", function() {
+    var targetWidth = Math.min(chart.parent().width(), 400);
+    chart.attr("width", targetWidth);
+    chart.attr("height", targetWidth / aspect);
+});
 
 var color = d3.scale.category20();
 
