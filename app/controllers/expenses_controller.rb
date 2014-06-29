@@ -7,7 +7,7 @@ class ExpensesController < ApplicationController
     @expense = Expense.new(expense_params)
     use_new_category
     if @expense.save
-      redirect_to expenses_path
+      redirect_to overview_expenses_path
     else
       render :new
     end
@@ -49,7 +49,7 @@ class ExpensesController < ApplicationController
     @expense = Expense.find(params[:id])
     @expense.destroy
 
-    redirect_to expenses_path
+    redirect_to overview_expenses_path
   end
 
   private

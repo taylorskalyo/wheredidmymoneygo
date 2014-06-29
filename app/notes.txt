@@ -1,0 +1,4 @@
+Average expense in each category per month
+12 month period
+
+Import data from excel
