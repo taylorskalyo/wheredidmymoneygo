@@ -34,15 +34,15 @@ class ExpensesController < ApplicationController
   end
 
   def index
-    @expenses = Expense.order(date: :desc)
+    @expenses = Expense.all
   end
 
   def overview
-    @expenses = Expense.order(date: :desc).limit(14)
+    @expenses = Expense.all
   end
 
   def charts
-    @expenses = Expense.order(date: :desc)
+    @expenses = Expense.all
   end
 
   def destroy

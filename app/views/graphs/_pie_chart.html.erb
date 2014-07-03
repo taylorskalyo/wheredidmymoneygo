@@ -1,5 +1,6 @@
 <%= stylesheet_link_tag    'graphs', media: 'all', 'data-turbolinks-track' => true %>
 
+<br>
 <svg class="pie_chart"width="400" height="250" viewBox="0 0 400 250"
   preserveAspectRatio="xMidYMid"></svg>
 
@@ -9,79 +10,134 @@ var width = 400,
     radius = Math.min(width, height) / 2 - 10;
 
 var aspect = 400 / 250,
-    chart = $(".pie_chart");
+  chart = $(".pie_chart");
 $(window).on("resize", function() {
-    var targetWidth = Math.min(chart.parent().width(), 400);
-    chart.attr("width", targetWidth);
-    chart.attr("height", targetWidth / aspect);
+  var targetWidth = Math.min(chart.parent().width(), 400);
+  chart.attr("width", targetWidth);
+  chart.attr("height", targetWidth / aspect);
 });
+
+function shorten(str) {
+  return (str.length > 13)? str.substring(0,10) + "..." : str;
+}
+
+/* ------- PIE CHART PROPERTIES -------*/
+var svg = d3.select(".pie_chart")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g");
+
+svg.append("g")
+  .attr("class", "lines");
+svg.append("g")
+  .attr("class", "slices");
+svg.append("g")
+  .attr("class", "labels");
+svg.append("g")
+  .attr("class", "percent")
+  .append("text")
+  .attr("dy", ".35em")
+  .style("text-anchor", "middle")
+  .attr("font-size", "1.5em")
+  .attr("fill", "gray");
 
 var color = d3.scale.category20();
 
 var pie = d3.layout.pie()
-  .value(function(d) { return d.amount; })
-  .sort(null);
+  .sort(null)
+  .value(function(d) {
+    return d.amount;
+  });
 
 var arc = d3.svg.arc()
-  .outerRadius(radius * 0.9)
-  .innerRadius(0);
+  .outerRadius(radius * 0.8)
+  .innerRadius(radius * 0.3);
 
 var outerArc = d3.svg.arc()
-  .innerRadius(radius)
+  .innerRadius(radius * 0.9)
+  .outerRadius(radius * 0.9);
+
+var outsideArc = d3.svg.arc()
+  .innerRadius(radius * 0.5)
   .outerRadius(radius);
 
-var data = <%= raw Expense.group(:category).sum(:amount).map{|e| {
-  :amount => e[1], 
-  :category => e[0],
-  :amount_str => number_to_currency(e[1])
-}}.sort_by { |expense| expense[:amount] }.reverse.to_json %>;
+svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-var preview = false;
+var key = function(d){ return d.data.category; };
 
-// data = [];
+  function hide_percent() {
+    svg.select(".percent").select("text")
+      .text("");
 
-if (data.length == 0) {
-  preview = true;
-  data = [
-    {amount:165.34, category:"Groceries", amount_str:"$165.34"},
-    {amount:110.07, category:"Bills",     amount_str:"$110.07"},
-    {amount:49.12,  category:"Gas",       amount_str:"$49.12" },
-    {amount:20.81,  category:"Other",     amount_str:"$20.81" }
-  ]
-}
+    svg.select(".slices").selectAll("path.slice")
+      .transition().duration(150)
+        .attr("transform", "scale(1)");
+  }
 
-var svg = d3.select(".pie_chart")
-  .attr("width", width)
-  .attr("height", height)
-  .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+function change(data) {
 
-var path = svg.datum(data).selectAll("path")
-    .data(pie)
-  .enter().append("path")
-    .attr("fill", function(d, i) { return color(i); })
-    .attr("d", arc)
-    .append("svg:title")
-      .text(function(d) {
-        return d.data.category + " (" + d.data.amount_str + ")";
+  function show_percent(d) {
+    svg.select(".percent").select("text")
+      .text(percent(d));
+
+    svg.select(".slices").selectAll("path.slice")
+      .transition().duration(150).attrTween("transform", function(d, i, a) {
+        return d3.interpolateString(a, 'scale(1)');
       });
 
-function midAngle(d){
-  return d.startAngle + (d.endAngle - d.startAngle)/2;
-}
+    d3.select(this)
+      .transition().duration(150).attrTween("transform", function(d, i, a) {
+        return d3.interpolateString(a, 'scale(1.1)');
+      });
+  }
 
-var text = svg.datum(data).selectAll(".pie-label")
-  .data(pie(data))
-  .enter()
-  .append("text")
-    .attr("class", "pie-label")
-    .attr("dy", ".35em")
-    .text(function(d) {
-      cat = d.data.category
-      return (cat.length > 13) ? cat.substring(0,10)+"..." : cat;
+  /* ------- PIE SLICES -------*/
+  var slice = svg.select(".slices").selectAll("path.slice")
+    .data(pie(data), key);
+
+  slice.enter()
+    .insert("path")
+    .style("fill", function(d) { return color(d.data.category); })
+    .attr("class", "slice")
+    .attr("transform", "scale(1)")
+    .on("click", show_percent)
+    .on("mouseover", show_percent)
+    .on("mouseout", hide_percent)
+    .append("title")
+      .text(function(d) { return d.data.category + " - $" + d.data.amount; });
+
+  slice.transition().duration(1000)
+    .attrTween("d", function(d) {
+      this._current = this._current || d;
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0);
+      return function(t) { return arc(interpolate(t)); };
     });
 
-text.transition()
+  slice.exit()
+    .remove();
+
+  /* ------- TEXT LABELS -------*/
+  var text = svg.select(".labels").selectAll("text")
+    .data(pie(data), key);
+
+  text.enter()
+    .append("text")
+    .attr("dy", ".35em")
+    .text(function(d) { return shorten(d.data.category); })
+    .append("title")
+      .text(function(d) { return d.data.category + " - $" + d.data.amount; });
+
+  function midAngle(d){
+    return d.startAngle + (d.endAngle - d.startAngle)/2;
+  }
+
+  function percent(d){
+    p = Math.round(100 * d.data.amount / total_amount);
+      return "%" + p;
+  }
+
+  text.transition().duration(1000)
     .attrTween("transform", function(d) {
       this._current = this._current || d;
       var interpolate = d3.interpolate(this._current, d);
@@ -103,50 +159,112 @@ text.transition()
       };
     });
 
-text.append("svg:title")
-  .text(function(d) {
-    return d.data.category + " (" + d.data.amount_str + ")";
-  });
+  text.exit()
+    .remove();
 
+  /* ------- LABEL TO SLICE LINES -------*/
+  var polyline = svg.select(".lines").selectAll("polyline")
+    .data(pie(data), key);
 
-var polyline = svg.datum(data).selectAll("polyline")
-    .data(pie(data));
+  polyline.enter()
+    .append("polyline");
 
-polyline.enter()
-  .append("polyline");
+  polyline.transition().duration(1000)
+    .attrTween("points", function(d){
+      this._current = this._current || d;
+      var interpolate = d3.interpolate(this._current, d);
+      this._current = interpolate(0);
+      return function(t) {
+        var d2 = interpolate(t);
+        var pos = outerArc.centroid(d2);
+        pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+        return [outsideArc.centroid(d2), outerArc.centroid(d2), pos];
+      };
+    });
 
-polyline.transition()
-  .attrTween("points", function(d){
-    this._current = this._current || d;
-    var interpolate = d3.interpolate(this._current, d);
-    this._current = interpolate(0);
-    return function(t) {
-      var d2 = interpolate(t);
-      var pos = outerArc.centroid(d2);
-      pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
-      return [arc.centroid(d2), outerArc.centroid(d2), pos];
-    };
-  });
+  polyline.exit()
+    .remove();
 
-polyline.append("svg:title")
-  .text(function(d) {
-    return d.data.category + " (" + d.data.amount_str + ")";
-  });
+  /* ------- PREVIEW (NO DATA) -------*/
+  if (preview) {
+    svg.append("rect")
+      .attr("x", -width / 2)
+      .attr("y", -height / 2)
+      .attr("width", width)
+      .attr("height", height)
+      .attr("fill", "white")
+      .attr("opacity", 0.75);
 
-if (preview) {
-  svg.append("rect")
-    .attr("x", -width / 2)
-    .attr("y", -height / 2)
-    .attr("width", width)
-    .attr("height", height)
-    .attr("fill", "white")
-    .attr("opacity", 0.75);
+    svg.append("text")
+      .text("Preview")
+      .attr("dy", ".4em")
+      .style("text-anchor", "middle")
+      .style("font-size", "1.9em");
+  }
 
-  svg.append("text")
-    .text("Preview")
-    .attr("dy", ".4em")
-    .style("text-anchor", "middle")
-    .style("font-size", "1.9em");
+};
+
+var expenses = <%= raw @expenses.to_json %>
+
+var data = [],
+    total_amount = 0;
+update_data();
+
+function compare_categories(a,b) {
+  if (a.amount > b.amount)
+     return -1;
+  if (a.amount < b.amount)
+    return 1;
+  return 0;
+}
+
+function update_data() {
+  hide_percent();
+  total_amount = 0;
+  from_field = document.getElementById('from_date');
+  to_field = document.getElementById('to_date');
+  from = from_field && Date.parse(from_field.value);
+  to = to_field && Date.parse(to_field.value);
+
+  // Use a dictionary to add up expenses in each category
+  dict = {};
+  for (i=0; i<expenses.length; i++) {
+    e = expenses[i];
+    if (from == null || (isNaN(from) || Date.parse(e.date) > from) 
+      && (to == null || isNaN(to)    || Date.parse(e.date) < to)) {
+      if (e.category in dict) {
+        dict[e.category] += e.amount;
+      }
+      else {
+        dict[e.category] = e.amount;
+      }
+      total_amount += e.amount;
+    }
+  }
+
+  // Add each category/amount pair to an array and sort
+  data = [];
+  for (category in dict) {
+    data.push({
+      "category":category, 
+      "amount":dict[category]
+    });
+  }
+  data.sort(compare_categories);
+  change(data);
+}
+
+/* ------- PREVIEW DATA -------*/
+var preview = false;
+// data = [];
+if (data.length == 0) {
+  preview = true;
+  data = [
+    {amount:165.34, category:"Groceries", amount_str:"$165.34"},
+    {amount:110.07, category:"Bills",     amount_str:"$110.07"},
+    {amount:49.12,  category:"Gas",       amount_str:"$49.12" },
+    {amount:20.81,  category:"Other",     amount_str:"$20.81" }
+  ]
 }
 
 </script>

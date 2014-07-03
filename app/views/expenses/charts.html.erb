@@ -1,0 +1,10 @@
+<h1 class="page-header">Charts</h1>
+
+<%= label_tag :from %>
+<%= date_field_tag :from_date, {}, 
+      :onchange => "update_data();" %>
+<%= label_tag :to %>
+<%= date_field_tag :to_date, {}, 
+      :onchange => "update_data();" %>
+
+<%= render :partial => 'graphs/pie_chart' %>
