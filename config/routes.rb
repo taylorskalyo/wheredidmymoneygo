@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   end
 
   get 'login', :controller => :sessions, :action => :new
+  get 'logout', :controller => :sessions, :action => :destroy
 
   resources :users, :sessions
 
