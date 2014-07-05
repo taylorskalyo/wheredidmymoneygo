@@ -1,4 +1,7 @@
 class ExpensesController < ApplicationController
+
+  before_filter :require_session
+
   def new
     @expense = Expense.new
   end
@@ -15,7 +18,7 @@ class ExpensesController < ApplicationController
 
   def edit
     @expense = Expense.find(params[:id])
-    session[:return_to] ||= request.referer
+    remember_referer
   end
 
   def update
@@ -23,7 +26,7 @@ class ExpensesController < ApplicationController
     @expense.attributes = expense_params
     use_new_category
     if @expense.save
-      redirect_to session.delete(:return_to)
+      redirect_back_or_default(overview_expenses_path)
     else
       render :edit
     end
