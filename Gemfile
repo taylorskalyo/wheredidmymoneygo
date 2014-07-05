@@ -45,3 +45,6 @@ ruby '2.0.0'
 # Bootstrap
 gem 'bootstrap-sass', '~> 3.1.1'
 
+# Bcrypt (hashing)
+gem 'bcrypt'
+

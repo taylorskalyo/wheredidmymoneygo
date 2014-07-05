@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+
   get 'main/index'
 
   resources :expenses do
@@ -7,6 +8,10 @@ Rails.application.routes.draw do
       get :charts
     end
   end
+
+  get 'login', :controller => :sessions, :action => :new
+
+  resources :users, :sessions
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -16,16 +16,16 @@
 
 <%= form_for @expense do |f| %>
   <% if @expense.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@expense.errors.count, "error") %>
-      prohibited this expense from being saved:
-    </h2>
-    <ul>
-    <% @expense.errors.full_messages.each do |msg| %>
-      <li><%= msg %></li>
-    <% end %>
-    </ul>
-  </div>
+    <div id="error_explanation">
+      <h2><%= pluralize(@expense.errors.count, "error") %>
+        prohibited this expense from being saved:
+      </h2>
+      <ul>
+      <% @expense.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
   <% end %>
 
   <p>
@@ -60,7 +60,7 @@
   </p>
 
   <p>
-    <%= f.submit %>
+    <%= f.submit :class => "btn btn-default" %>
   </p>
 <% end %>
 

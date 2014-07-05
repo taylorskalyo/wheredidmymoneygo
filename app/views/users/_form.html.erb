@@ -1,0 +1,30 @@
+<%= form_for(:user, :url => {:controller => :users, :action => :create}) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <ul class="list-group">
+      <% @user.errors.full_messages.each do |msg| %>
+        <li class="list-group-item list-group-item-danger"><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <p>
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </p>
+
+  <p>
+    <%= f.label :password %><br>
+    <%= f.password_field :password  %>
+  </p>
+
+  <p>
+    <%= f.label :confirm_password %><br>
+    <%= f.password_field :password_confirmation  %>
+  </p>
+
+  <p>
+    <%= f.submit :class => "btn btn-default" %>
+  </p>
+<% end %>
+
