@@ -13,25 +13,23 @@
         </div>
       </div>
     </div>
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <tr>
-          <th>Amount</th>
-          <td> <%= number_to_currency(@expense.amount) %>
-        </tr>
-        <tr>
-          <th>Date</th>
-          <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
-        </tr>
-        <tr>
-          <th>Category</th>
-          <td> <%= @expense.category %>
-        </tr>
-        <tr>
-          <th>Description</th>
-          <td> <%= @expense.description %>
-        </tr>
-      </table>
-    </div>
+    <table class="table table-striped">
+      <tr>
+        <th>Amount</th>
+        <td> <%= number_to_currency(@expense.amount) %>
+      </tr>
+      <tr>
+        <th>Date</th>
+        <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
+      </tr>
+      <tr>
+        <th>Category</th>
+        <td> <%= @expense.category %>
+      </tr>
+      <tr>
+        <th>Description</th>
+        <td> <%= @expense.description %>
+      </tr>
+    </table>
   </div>
 </div>
