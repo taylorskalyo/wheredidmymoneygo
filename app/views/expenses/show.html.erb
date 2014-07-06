@@ -1,31 +1,37 @@
-<h1>Expense</h1>
-
-<div class="col-md-8 col-lg-6 well">
-  <div class="table-responsive">
-  <table class="table table-striped">
-    <tr>
-      <th>Amount</th>
-      <td> <%= number_to_currency(@expense.amount) %>
-    </tr>
-    <tr>
-      <th>Date</th>
-      <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
-    </tr>
-    <tr>
-      <th>Category</th>
-      <td> <%= @expense.category %>
-    </tr>
-    <tr>
-      <th>Description</th>
-      <td> <%= @expense.description %>
-    </tr>
-  </table>
-  </div>
-  <div class="btn-group btn-group-justified">
-    <%= link_to 'Edit', edit_expense_path(@expense),
-      class: "btn btn-primary" %>
-    <%= link_to 'Delete', expense_path(@expense),
-      class: "btn btn-default", method: :delete,
-      data: { confirm: 'Are you sure?' } %>
+<div class="col-md-8 col-lg-6">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="row">
+        <div class="col-xs-6">
+          <%= link_to 'Edit', edit_expense_path(@expense),
+            class: "btn btn-primary" %>
+        </div>
+        <div class="col-xs-6">
+          <%= link_to 'Delete', expense_path(@expense),
+            class: "btn btn-default pull-right", method: :delete,
+            data: { confirm: 'Are you sure?' } %>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tr>
+          <th>Amount</th>
+          <td> <%= number_to_currency(@expense.amount) %>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
+        </tr>
+        <tr>
+          <th>Category</th>
+          <td> <%= @expense.category %>
+        </tr>
+        <tr>
+          <th>Description</th>
+          <td> <%= @expense.description %>
+        </tr>
+      </table>
+    </div>
   </div>
 </div>
