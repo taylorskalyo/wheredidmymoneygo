@@ -41,7 +41,34 @@ svg.append("g")
   .attr("font-size", "1.5em")
   .attr("fill", "gray");
 svg.append("g")
-  .attr("class", "preview");
+  .attr("class", "no_data")
+  .style("visibility", "hidden")
+  .append("text")
+    .text("No Results")
+    .attr("dy", ".4em")
+    .style("text-anchor", "middle")
+    .style("font-size", "1.9em");
+previewLabel = svg.append("g")
+  .attr("class", "preview")
+  .style("visibility", "hidden");
+
+previewLabel
+  .append("rect")
+    .attr("x", -width / 2)
+    .attr("y", -height / 2)
+    .attr("width", width)
+    .attr("height", height)
+    .attr("fill", "white")
+    .attr("opacity", 0.75);
+previewLabel
+  .append("text")
+    .text("Preview")
+    .attr("dy", ".4em")
+    .style("text-anchor", "middle")
+    .style("font-size", "1.9em");
+
+
+
 
 var color = d3.scale.category20();
 
@@ -187,26 +214,22 @@ function change(data) {
   polyline.exit()
     .remove();
 
-  /* ------- PREVIEW (NO DATA) -------*/
-  mask = svg.select(".preview");
-  children = mask.selectAll("*");
-  if (preview && children.empty()) {
-    mask.append("rect")
-      .attr("x", -width / 2)
-      .attr("y", -height / 2)
-      .attr("width", width)
-      .attr("height", height)
-      .attr("fill", "white")
-      .attr("opacity", 0.75);
-
-    mask.append("text")
-      .text("Preview")
-      .attr("dy", ".4em")
-      .style("text-anchor", "middle")
-      .style("font-size", "1.9em");
+  /* ------- SHOW OR HIDE PREVIEW / NO DATA -------*/
+  if (is_preview) {
+    svg.select(".preview")
+      .style("visibility", "visible");
   }
-  else if (!preview) {
-    children.remove();
+  else {
+    svg.select(".preview")
+      .style("visibility", "hidden");
+  }
+  if (data.length < 1) {
+    svg.select(".no_data")
+      .style("visibility", "visible");
+  }
+  else {
+    svg.select(".no_data")
+      .style("visibility", "hidden");
   }
 
 };
@@ -225,7 +248,7 @@ function compare_categories(a,b) {
   return 0;
 }
 
-var preview = false;
+var is_preview = false;
 function update_data() {
   hide_percent();
   total_amount = 0;
@@ -261,9 +284,8 @@ function update_data() {
   data.sort(compare_categories);
 
   /* ------- PREVIEW IF NO DATA -------*/
-  // data = [];
-  if (data.length == 0) {
-    preview = true;
+  if (expenses.length == 0) {
+    is_preview = true;
     data = [
       {amount:165.34, category:"Groceries", amount_str:"$165.34"},
       {amount:110.07, category:"Bills",     amount_str:"$110.07"},
