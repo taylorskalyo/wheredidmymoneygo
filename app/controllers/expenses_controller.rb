@@ -1,12 +1,12 @@
 class ExpensesController < ApplicationController
 
   before_filter :require_session
+  before_filter :remember_referer, :only => [:new, :edit, :destroy]
 
   helper_method :user_categories
 
   def new
     @expense = Expense.new
-    remember_referer
   end
 
   def create
@@ -14,7 +14,7 @@ class ExpensesController < ApplicationController
     @expense = @user.expenses.create(expense_params)
     use_new_category
     if @expense.save
-      redirect_back_or_default(overview_expenses_path)
+      redirect_to remembered_page || overview_expenses_path
     else
       render :new
     end
@@ -22,7 +22,6 @@ class ExpensesController < ApplicationController
 
   def edit
     @expense = current_user.expenses.find_by_id(params[:id])
-    remember_referer
   end
 
   def update
@@ -30,7 +29,7 @@ class ExpensesController < ApplicationController
     @expense.attributes = expense_params
     use_new_category
     if @expense.save
-      redirect_back_or_default(overview_expenses_path)
+      redirect_to remembered_page || overview_expenses_path
     else
       render :edit
     end
@@ -56,7 +55,7 @@ class ExpensesController < ApplicationController
     @expense = current_user.expenses.find_by_id(params[:id])
     @expense.destroy
 
-    redirect_back_or_default(overview_expenses_path)
+    redirect_to remembered_page || overview_expenses_path
   end
 
   def user_categories

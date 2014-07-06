@@ -9,8 +9,8 @@ class SessionsController < ApplicationController
     user = User.find_by_email(params[:email])
     if user && user.password == params[:password]
       session[:user_id] = user.id
-      flash.now[:success] = "You are now logged in"
-      redirect_back_or_default(overview_expenses_path)
+      flash[:success] = "You are now logged in"
+      redirect_to remembered_page || overview_expenses_path
     else
       flash[:failure] = "Incorrect username or password"
       redirect_to login_path

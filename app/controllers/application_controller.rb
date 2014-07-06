@@ -5,9 +5,9 @@ class ApplicationController < ActionController::Base
 
   helper_method :current_user,
     :logged_in?,
-    :remember_location,
+    :remember_page,
     :remember_referer,
-    :remembered_path_or_default
+    :remembered_page
 
   def current_user
     @current_user ||= User.find(session[:user_id]) rescue nil
@@ -17,25 +17,23 @@ class ApplicationController < ActionController::Base
     return true if current_user
   end
 
-  def remember_location
+  def remember_page
     session[:return_to] = request.url
   end
 
+  # NOTE: Use this function sparingly. If two pages both link to each other
+  #  and remember their referer, the user can get stuck in a loop.
   def remember_referer
     session[:return_to] = request.referer
   end
 
-  def remembered_path_or_default(default)
-    return session.delete(:return_to) || default
-  end
-
-  def redirect_back_or_default(default)
-    redirect_to remembered_path_or_default(default)
+  def remembered_page
+    return session.delete(:return_to)
   end
 
   def require_session
     return true if logged_in?
-    remember_location
+    remember_page
     flash[:failure] = "You must be logged in to do that"
     redirect_to login_path and return false
   end

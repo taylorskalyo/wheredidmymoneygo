@@ -22,13 +22,10 @@
   </table>
   </div>
   <div class="btn-group btn-group-justified">
-    <%= link_to 'Done', remembered_path_or_default(overview_expenses_path),
-      class: "btn btn-primary" %>
-
     <%= link_to 'Edit', edit_expense_path(@expense),
-      class: "btn btn-default", onsubmit: remember_location %>
+      class: "btn btn-primary" %>
     <%= link_to 'Delete', expense_path(@expense),
-      class: "btn btn-default", onsubmit: remember_location,
-      method: :delete, data: { confirm: 'Are you sure?' } %>
+      class: "btn btn-default", method: :delete,
+      data: { confirm: 'Are you sure?' } %>
   </div>
 </div>
