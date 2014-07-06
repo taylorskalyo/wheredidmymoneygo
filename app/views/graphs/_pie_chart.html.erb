@@ -40,6 +40,8 @@ svg.append("g")
   .style("text-anchor", "middle")
   .attr("font-size", "1.5em")
   .attr("fill", "gray");
+svg.append("g")
+  .attr("class", "preview");
 
 var color = d3.scale.category20();
 
@@ -186,8 +188,10 @@ function change(data) {
     .remove();
 
   /* ------- PREVIEW (NO DATA) -------*/
-  if (preview) {
-    svg.append("rect")
+  mask = svg.select(".preview");
+  children = mask.selectAll("*");
+  if (preview && children.empty()) {
+    mask.append("rect")
       .attr("x", -width / 2)
       .attr("y", -height / 2)
       .attr("width", width)
@@ -195,11 +199,14 @@ function change(data) {
       .attr("fill", "white")
       .attr("opacity", 0.75);
 
-    svg.append("text")
+    mask.append("text")
       .text("Preview")
       .attr("dy", ".4em")
       .style("text-anchor", "middle")
       .style("font-size", "1.9em");
+  }
+  else if (!preview) {
+    children.remove();
   }
 
 };
@@ -218,6 +225,7 @@ function compare_categories(a,b) {
   return 0;
 }
 
+var preview = false;
 function update_data() {
   hide_percent();
   total_amount = 0;
@@ -251,20 +259,20 @@ function update_data() {
     });
   }
   data.sort(compare_categories);
-  change(data);
-}
 
-/* ------- PREVIEW DATA -------*/
-var preview = false;
-// data = [];
-if (data.length == 0) {
-  preview = true;
-  data = [
-    {amount:165.34, category:"Groceries", amount_str:"$165.34"},
-    {amount:110.07, category:"Bills",     amount_str:"$110.07"},
-    {amount:49.12,  category:"Gas",       amount_str:"$49.12" },
-    {amount:20.81,  category:"Other",     amount_str:"$20.81" }
-  ]
+  /* ------- PREVIEW IF NO DATA -------*/
+  // data = [];
+  if (data.length == 0) {
+    preview = true;
+    data = [
+      {amount:165.34, category:"Groceries", amount_str:"$165.34"},
+      {amount:110.07, category:"Bills",     amount_str:"$110.07"},
+      {amount:49.12,  category:"Gas",       amount_str:"$49.12" },
+      {amount:20.81,  category:"Other",     amount_str:"$20.81" }
+    ]
+  }
+
+  change(data);
 }
 
 </script>
