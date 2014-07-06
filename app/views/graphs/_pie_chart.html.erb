@@ -121,11 +121,6 @@ function change(data) {
       });
   }
 
-  /* TODO: Fix slice not updating
-  $100.00 2014-07-06  Rent
-  $48.00  2014-07-04  Groceries
-  $25.00  2014-07-04  Gas
-  Selecting from 2014-07-05 only shows Rent, but the slice doesn't update */
   /* ------- PIE SLICES -------*/
   var slice = svg.select(".slices").selectAll("path.slice")
     .data(pie(data), key);

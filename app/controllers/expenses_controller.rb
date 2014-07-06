@@ -20,14 +20,13 @@ class ExpensesController < ApplicationController
     end
   end
 
-  # TODO: Make sure the user has access before doing anything with an expense
   def edit
-    @expense = Expense.find(params[:id])
+    @expense = current_user.expenses.find_by_id(params[:id])
     remember_referer
   end
 
   def update
-    @expense = Expense.find(params[:id])
+    @expense = current_user.expenses.find_by_id(params[:id])
     @expense.attributes = expense_params
     use_new_category
     if @expense.save
@@ -38,7 +37,7 @@ class ExpensesController < ApplicationController
   end
 
   def show
-    @expense = Expense.find(params[:id])
+    @expense = current_user.expenses.find_by_id(params[:id])
   end
 
   def index
@@ -54,7 +53,7 @@ class ExpensesController < ApplicationController
   end
 
   def destroy
-    @expense = Expense.find(params[:id])
+    @expense = current_user.expenses.find_by_id(params[:id])
     @expense.destroy
 
     redirect_back_or_default(overview_expenses_path)
