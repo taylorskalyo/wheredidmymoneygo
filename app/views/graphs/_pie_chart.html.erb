@@ -111,12 +111,12 @@ function change(data) {
       .text(percent(d));
 
     svg.select(".slices").selectAll("path.slice")
-      .transition().duration(150).attrTween("transform", function(d, i, a) {
+      .transition().duration(500).ease("elastic").attrTween("transform", function(d, i, a) {
         return d3.interpolateString(a, 'scale(1)');
       });
 
     d3.select(this)
-      .transition().duration(150).attrTween("transform", function(d, i, a) {
+      .transition().duration(500).ease("elastic").attrTween("transform", function(d, i, a) {
         return d3.interpolateString(a, 'scale(1.1)');
       });
   }
@@ -136,7 +136,7 @@ function change(data) {
     .append("title")
       .text(function(d) { return d.data.category + " - $" + d.data.amount; });
 
-  slice.transition().duration(1000)
+  slice.transition().duration(500)
     .attrTween("d", function(d) {
       this._current = this._current || d;
       var interpolate = d3.interpolate(this._current, d);
@@ -169,7 +169,7 @@ function change(data) {
       return "%" + p;
   }
 
-  text.transition().duration(1000)
+  text.transition().duration(500)
     .attrTween("transform", function(d) {
       this._current = this._current || d;
       var interpolate = d3.interpolate(this._current, d);
@@ -201,7 +201,7 @@ function change(data) {
   polyline.enter()
     .append("polyline");
 
-  polyline.transition().duration(1000)
+  polyline.transition().duration(500)
     .attrTween("points", function(d){
       this._current = this._current || d;
       var interpolate = d3.interpolate(this._current, d);
