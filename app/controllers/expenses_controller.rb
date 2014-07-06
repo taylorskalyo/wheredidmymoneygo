@@ -8,7 +8,8 @@ class ExpensesController < ApplicationController
   end
 
   def create
-    @expense = Expense.new(expense_params)
+    @user = current_user
+    @expense = @user.expenses.create(expense_params)
     use_new_category
     if @expense.save
       redirect_back_or_default(overview_expenses_path)
@@ -38,15 +39,15 @@ class ExpensesController < ApplicationController
   end
 
   def index
-    @expenses = Expense.order(date: :desc)
+    @expenses = current_user.expenses.order(date: :desc)
   end
 
   def overview
-    @expenses = Expense.order(date: :desc).limit(14)
+    @expenses = current_user.expenses.order(date: :desc).limit(14)
   end
 
   def charts
-    @expenses = Expense.order(date: :desc)
+    @expenses = current_user.expenses.order(date: :desc)
   end
 
   def destroy
