@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   get 'login', :controller => :sessions, :action => :new
   get 'logout', :controller => :sessions, :action => :destroy
+  get 'signup', :controller => :users, :action => :new
 
   resources :users, :sessions
 

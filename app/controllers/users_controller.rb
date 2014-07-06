@@ -1,13 +1,14 @@
 class UsersController < ApplicationController
   def new
     @user = User.new
+    remember_referer
   end
 
   def create
     @user = User.new(user_params)
     if @user.save
       flash.now[:success] = "Account saved"
-      redirect_to overview_expenses_path
+      redirect_back_or_default(login_path)
     else
       render :new
     end

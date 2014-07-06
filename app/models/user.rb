@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   validates_length_of :password, :in => 6..255, :on => :create
   validates_presence_of :password_confirmation, :if => :password_changed?
 
+  has_many :expenses
+
   def password
     @password ||= Password.new(password_hash)
   end

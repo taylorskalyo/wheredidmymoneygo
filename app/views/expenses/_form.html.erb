@@ -14,7 +14,7 @@
 
 </script>
 
-<%= form_for @expense do |f| %>
+<%= form_for @expense, :html => {:class => "form-horizontal", :role => "form"} do |f| %>
   <% if @expense.errors.any? %>
     <div id="error_explanation">
       <ul class="list-group">
@@ -25,39 +25,62 @@
     </div>
   <% end %>
 
-  <p>
-    <%= f.label :amount %><br>
-    <%= f.number_field :amount, in: 0.0..999999999.99, step: 0.01 %>
-  </p>
-
-  <p>
-    <% @expense.date ||= Time.now.to_s(:db) %>
-    <%= f.label :date %><br>
-    <%= f.date_field :date  %>
-  </p>
-
-  <p>
-    <%= f.label :category %><br>
-    <% options = (["", ["Create new category", "New"]] + 
-      Expense.select(:category).map(&:category)).uniq %>
-    <%= f.select :category, options, {}, 
-      :onchange => "display_new_category();" %>
-  </p>
-
-  <div id="new_category_div" style="display:none">
-  <p>
-    <%= label_tag :new_category %><br>
-    <%= text_field_tag :new_category %>
-  </p>
+  <div class="form-group">
+    <div class="col-sm-8 col-md-5 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-usd"></span></span>
+        <%= f.number_field :amount, in: 0.0..999999999.99, step: 0.01, 
+          class: "form-control", placeholder: "Amount" %>
+      </div>
+    </div>
   </div>
 
-  <p>
-    <%= f.label :description %><br>
-    <%= f.text_area :description %>
-  </p>
+  <div class="form-group">
+    <% @expense.date ||= Time.zone.today %>
+    <div class="col-sm-8 col-md-5 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+        <%= f.date_field :date, class: "form-control" %>
+      </div>
+    </div>
+  </div>
 
-  <p>
-    <%= f.submit :class => "btn btn-default" %>
-  </p>
+  <div class="form-group">
+    <div class="col-sm-8 col-md-5 col-lg-4">
+      <% options = ([["Create new category", "New"]] + 
+        Expense.select(:category).map(&:category)).uniq %>
+      <%= f.select :category, options, {:prompt => "Select Category"}, 
+        :onchange => "display_new_category();", :class => "form-control"%>
+    </div>
+  </div>
+
+  <div id="new_category_div" style="display:none">
+    <div class="form-group">
+      <div class="col-sm-8 col-md-5 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-pencil"></span></span>
+        <%= text_field_tag :new_category, nil, class: "form-control", 
+          placeholder: "New Category" %>
+      </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-8 col-md-5 col-lg-4">
+      <div class="input-group">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-tag"></span></span>
+        <%= f.text_area :description, class: "form-control", placeholder: "Description" %>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-8 col-md-5 col-lg-4">
+      <%= f.submit :class => "btn btn-primary" %>
+      <%= link_to "Cancel", remembered_path_or_default(overview_expenses_path), 
+        class: "btn btn-default pull-right" %>
+    </div>
+  </div>
 <% end %>
 
