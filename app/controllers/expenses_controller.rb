@@ -2,13 +2,15 @@ class ExpensesController < ApplicationController
 
   before_filter :require_session
 
+  helper_method :user_categories
+
   def new
     @expense = Expense.new
     remember_referer
   end
 
   def create
-    @user = current_user
+    @user ||= current_user
     @expense = @user.expenses.create(expense_params)
     use_new_category
     if @expense.save
@@ -18,6 +20,7 @@ class ExpensesController < ApplicationController
     end
   end
 
+  # TODO: Make sure the user has access before doing anything with an expense
   def edit
     @expense = Expense.find(params[:id])
     remember_referer
@@ -55,6 +58,11 @@ class ExpensesController < ApplicationController
     @expense.destroy
 
     redirect_back_or_default(overview_expenses_path)
+  end
+
+  def user_categories
+    @user ||= current_user
+    @user.expenses.select(:category).map(&:category).uniq
   end
 
   private
