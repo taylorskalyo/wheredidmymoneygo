@@ -11,14 +11,16 @@ var width = 400,
 
 var aspect = 400 / 250,
   chart = $(".pie_chart");
-$(window).on("resize", function() {
+$(window).on("resize", resize());
+
+function resize() {
   var targetWidth = Math.min(chart.parent().width(), 400);
   chart.attr("width", targetWidth);
   chart.attr("height", targetWidth / aspect);
-});
+}
 
 function shorten(str) {
-  return (str.length > 13)? str.substring(0,10) + "..." : str;
+  return (str.length > 12)? str.substring(0,9) + "..." : str;
 }
 
 var animating = false;
@@ -242,6 +244,7 @@ var expenses = <%= raw @expenses.to_json %>
 var data = [],
     total_amount = 0;
 update_data();
+resize();
 
 function compare_categories(a,b) {
   if (a.amount > b.amount)
