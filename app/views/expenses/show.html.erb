@@ -1,25 +1,34 @@
-<%= link_to 'View All', overview_expenses_path %>
-| <%= link_to 'Edit', edit_expense_path(@expense) %>
-| <%= link_to 'Delete', expense_path(@expense), 
-  method: :delete, data: { confirm: 'Are you sure?' } %>
-<div class="table-responsive">
-<table class="table table-striped">
-  <tr>
-    <th>Amount</th>
-    <td> <%= number_to_currency(@expense.amount) %>
-  </tr>
-  <tr>
-    <th>Date</th>
-    <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
-  </tr>
-  <tr>
-    <th>Category</th>
-    <td> <%= @expense.category %>
-  </tr>
-  <tr>
-    <th>Description</th>
-    <td> <%= @expense.description %>
-  </tr>
-</table>
-</div>
+<h1>Expense</h1>
 
+<div class="col-md-8 col-lg-6 well">
+  <div class="table-responsive">
+  <table class="table table-striped">
+    <tr>
+      <th>Amount</th>
+      <td> <%= number_to_currency(@expense.amount) %>
+    </tr>
+    <tr>
+      <th>Date</th>
+      <td> <%= @expense.date.strftime("%A, %B %d, %Y") %>
+    </tr>
+    <tr>
+      <th>Category</th>
+      <td> <%= @expense.category %>
+    </tr>
+    <tr>
+      <th>Description</th>
+      <td> <%= @expense.description %>
+    </tr>
+  </table>
+  </div>
+  <div class="btn-group btn-group-justified">
+    <%= link_to 'Done', remembered_path_or_default(overview_expenses_path),
+      class: "btn btn-primary" %>
+
+    <%= link_to 'Edit', edit_expense_path(@expense),
+      class: "btn btn-default", onsubmit: remember_location %>
+    <%= link_to 'Delete', expense_path(@expense),
+      class: "btn btn-default", onsubmit: remember_location,
+      method: :delete, data: { confirm: 'Are you sure?' } %>
+  </div>
+</div>

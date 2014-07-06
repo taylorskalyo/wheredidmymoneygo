@@ -3,10 +3,10 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  helper_method :current_user, 
+  helper_method :current_user,
     :logged_in?,
-    :remember_location, 
-    :remember_referer, 
+    :remember_location,
+    :remember_referer,
     :remembered_path_or_default
 
   def current_user
@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   end
 
   def remember_referer
-    session[:return_to] ||= request.referer
+    session[:return_to] = request.referer
   end
 
   def remembered_path_or_default(default)
