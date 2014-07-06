@@ -47,6 +47,7 @@ class ExpensesController < ApplicationController
     @expenses = current_user.expenses.order(date: :desc).limit(14)
   end
 
+  # TODO: Add more charts. PRIORITY: High
   def charts
     @expenses = current_user.expenses.order(date: :desc)
   end
