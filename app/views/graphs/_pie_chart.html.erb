@@ -21,6 +21,8 @@ function shorten(str) {
   return (str.length > 13)? str.substring(0,10) + "..." : str;
 }
 
+var animating = false;
+
 /* ------- PIE CHART PROPERTIES -------*/
 var svg = d3.select(".pie_chart")
   .attr("width", width)
@@ -67,9 +69,6 @@ previewLabel
     .style("text-anchor", "middle")
     .style("font-size", "1.9em");
 
-
-
-
 var color = d3.scale.category20();
 
 var pie = d3.layout.pie()
@@ -95,6 +94,7 @@ svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 var key = function(d){ return d.data.category; };
 
   function hide_percent() {
+    if (animating) return;
     svg.select(".percent").select("text")
       .text("");
 
@@ -106,6 +106,7 @@ var key = function(d){ return d.data.category; };
 function change(data) {
 
   function show_percent(d) {
+    if (animating) return;
     svg.select(".percent").select("text")
       .text(percent(d));
 
@@ -120,6 +121,11 @@ function change(data) {
       });
   }
 
+  /* TODO: Fix slice not updating
+  $100.00 2014-07-06  Rent
+  $48.00  2014-07-04  Groceries
+  $25.00  2014-07-04  Gas
+  Selecting from 2014-07-05 only shows Rent, but the slice doesn't update */
   /* ------- PIE SLICES -------*/
   var slice = svg.select(".slices").selectAll("path.slice")
     .data(pie(data), key);
@@ -141,7 +147,9 @@ function change(data) {
       var interpolate = d3.interpolate(this._current, d);
       this._current = interpolate(0);
       return function(t) { return arc(interpolate(t)); };
-    });
+    })
+    .each('start',function(d) { animating = true; })
+    .each('end',  function(d) { animating = false; });
 
   slice.exit()
     .remove();
